@@ -1,0 +1,29 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js
+/.next
+/out
+/build
+
+# local data and secrets
+/.env
+/.env.local
+/.env.*.local
+/wiki-data/*
+!/wiki-data/.gitkeep
+!/wiki-data/uploads/.gitkeep
+
+# tests and logs
+/coverage
+*.log
+
+# system files
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts

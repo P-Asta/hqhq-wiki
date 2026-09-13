@@ -1,0 +1,251 @@
+{{Location
+|title=68-Artifice
+|type=Moon
+|risk_level=S++
+|difficulty=Hard
+|cost=1500
+|map_layout=Mineshaft (49.77%)
+Mansion (35.28%)
+Factory (14.95%)
+|map_size_multiplier=1.8
+|weather=Rainy, Foggy, Flooded, Stormy, Eclipsed
+|min_scrap=26|max_scrap=30
+|turrets=0 - 9 (avg. 3)
+|landmines=0 - 60 (avg. 10)
+|power_count=13
+|outside_power_count=13
+|image=[[Artifice_Moon.png]]
+|daytime_power_count=15
+|indoor_spawn_deviation=3
+|outdoor_spawn_deviation=3
+|daytime_spawn_deviation=4
+|spike_traps=0 - 17 (avg. 3)|diversity_level=100|outside_diversity_level=100}}
+
+'''68-Artifice''' is a [[Moons|moon]] in ''[[Lethal Company]],'' with a difficulty rating of Hard and a hazard rating of "S++". The surface of Artifice is barren, aside from a large fence with four warehouses inside, leading up to the main entrance of the facility. Artifice features a very simple [[Fire Exit|fire exit]] found to the right of the main entrance. This moon's location is initially hidden from [[Employee|employees]], as it is not listed on the [[terminal]]. Its location must be deciphered first by travelling to [[Adamance]] and unlocking the [[cottage]] found in the valley.
+
+Artifice is by far the hardest and most difficult moon in the game, with very high [[scrap]] yields in addition to having high power levels across the board and many hazards, results in an extremely dangerous environment.
+
+==Moon Map==
+A map of "Artifice". 1 Main Entrance + 1 Fire Exit.<ref name=":02">"[https://steamcommunity.com/sharedfiles/filedetails/?id=3226863449 Steam - Outside Maps / Moons Guide]" by McMessenger (Updated)</ref>{{Map:Artifice}}
+
+==Moon Info==
+<div class="terminal-text">
+68-Artifice
+
+CONDITIONS: Abandoned facilities are littered across the landscape，which was once teeming with life.
+
+HISTORY: Weapons and classified technology has been found at various sites on the surface，dating back at least two hundred years.
+
+FAUNA: It's rumored that active machinery has been left behind.
+</div>
+
+==Environment==
+[[File:Artifice.png|thumb|A warehouse on Artifice.]]
+Artifice is a strangely empty and eerie moon. Everything around looks decayed and abandoned. Employees will descend upon a fenced in complex with four garages being dominating within the outer fence. Each garage is different than the last, having different interior aspects. From [[The Ship|the ship]] and facing the facility, the garages are in this order:
+
+*Warehouse Garage - (first, left)
+*Hospital Garage - (first, right)
+*Foggy Garage - ''Has heavy fog inside'' - (second, left)
+* Inaccessible Garage - ''Back door is blocked and bay door is shut with no way inside'' - (second, right)
+
+The closest warehouse appears to be a hospital with an office. Both of these rooms make great hiding spots.
+
+Within this complex is a small shack that has lights and a wall switch. There is also a hole in the wall and fence that allows traversal outside of the fence line.
+
+==Weather==
+Artifice supports five [[weather]] types; Rainy, Foggy, Flooded, Stormy and Eclipsed.
+
+===Rainy===
+Tread the ground with caution while it is rainy, as the terrain on the surface of Artifice is already a deep brown, making quicksand difficult to identify.
+
+=== Foggy ===
+As the route between the ship and the facility is relatively straight forward on Artifice, employees shouldn't have too much trouble with getting lost here.
+
+===Flooded===
+It is ill-advised to purchase any items while this moon is flooded, as the [[Dropship]] will be completely submerged by [[water]] right at the start of the day.[[File:Artifice Flooded Timelapse.gif|none|thumb|480x480px|Time-lapse of flooding on Artifice.<ref name=":02" />]]
+=== Stormy===
+The distance from the ship to the facility can make transferring conductive items more dangerous.
+===Eclipsed===
+Artifice will spawn three indoor and outdoor entities at the beginning of the day while eclipsed. [[Old Bird|Old Birds]] will be a major threat for the entire duration of the day.
+
+==Scrap Loot Table==
+{| class="sortable fandom-table"
+!'''Item'''
+!'''Spawn Chance'''
+!'''Min Value'''
+!'''Max Value'''
+!'''Average Value'''
+!'''Weight'''
+!'''Conductive'''
+!'''Two Handed'''
+|-
+|[[Robot toy|Robot Toy]]
+|4.73%
+|56▮
+|87▮
+|71▮
+|21 lb
+|Yes
+|No
+|-
+|[[Painting]]
+| 4.58%
+|60▮
+|123▮
+|91▮
+|31 lb
+|No
+|Yes
+|-
+|[[Rubber Ducky|Rubber ducky]]
+|4.43%
+|2▮
+|99▮
+|51▮
+|0 lb
+|No
+|No
+|-
+|[[Gold bar]]
+|2.36%
+|102▮
+|209▮
+|155▮
+|77 lb
+|Yes
+|No
+|-
+|[[Clown horn]]
+|2.29%
+|52▮
+|71▮
+|61▮
+| 0 lb
+|Yes
+
+|No
+|-
+|[[Magic 7 ball]]
+|2.22%
+|36▮
+|71▮
+|53▮
+|16 lb
+
+|No
+|No
+|-
+|[[Zed Dog]]
+|0.07%
+|0▮
+|199▮
+|99▮
+|0 lb
+|Yes
+|No
+|}
+==Entities ==
+
+===Indoors===
+Artifice has a very even spread of indoor [[entity|entities]], so it is recommended to bring weapons such as [[Shovel|Shovels]] or the [[Double-Barrel|Double-barrel]] if you have them.
+{| class="wikitable sortable"
+!Entity
+!Base Spawn Chance
+!Power Level
+!Max Spawned
+!Stunnable
+!Killable
+|-
+|[[Bunker Spider]]
+|7.94%
+|2
+|1
+|Yes
+|Yes
+|-
+|[[Bracken]]
+|7.94%
+|3
+|1
+|Yes
+|Yes
+|-
+|[[Maneater]]
+|1.11%
+|2
+|1
+|Yes
+|Yes
+|}
+===Outdoors===
+[[Old Bird|Old Birds]] are the most common entities outside on Artifice.
+{| class="wikitable sortable"
+!'''Entity'''
+!'''Base Spawn Chance'''
+!'''Power Level'''
+!'''Max Spawned'''
+!'''Is Stunnable'''
+!'''Is Killable'''
+|-
+|[[Old Bird]]
+|45.00%
+|3
+|20
+|Yes
+|No
+|-
+|[[Earth Leviathan]]
+|6.00%
+|2
+|3
+| No
+|No
+|}
+
+==Entity spawn Chance Multiplier Curves==
+[[File:Artifice_entity_spawn_curve.png|1100px]]
+
+==Strategy==
+The current standard strategy for Artifice involves the Company Cruiser and [[Weed Killer|Weed killer]]. If the moon is eclipsed, perform the eclipsed jump<ref>https://youtu.be/LsX4OrnNZLY?si=hj4PStUMyXAbpQuR&t=985</ref> to reach the fire exit. Ideally, all employees should be able to perform the Artifice jump<ref>https://youtu.be/LsX4OrnNZLY?si=F3SokEwvQKXtisxz&t=952</ref> back to the ship.
+
+There is an alternative, more casual strategy revolving around the Company Cruiser. Have three employees enter the facility via [[inverse teleporter]]. When the Cruiser is attached to the ship the driver will take up the role of [[Guide:Camera duty|camera duty]], teleporting employees in danger.
+
+==Notes==
+*Catwalks can be found connecting some of the warehouse which can be used to avoid the Old Birds.
+*This moon is not found on the terminal's moon list but rather on a wall inside of the [[cottage]] on [[Adamance]], which requires a [[key]] to go inside.
+
+[[Category:Destinations]]
+
+==Gallery==
+<gallery>
+File:ArtificeMapBirdView.png|Artifice from a bird eye view
+File:ArtificeBuilding1.png|Artifice's first building
+File:ArtificeConcept.png|Concept <ref>[https://www.patreon.com/posts/version-50-post-101884472 Patreon - The Version 50 Post]</ref>
+</gallery>
+
+==History==
+
+===[[Version 50]]===
+
+*Artifice is added.
+
+=== [[Version 60]] ===
+*Map size multiplier decreased from 2x to 1.8x.
+*Minimum scrap decreased from 31 to 26.
+*Adjusted the interior spawn chances.
+**Artifice is now commonly a [[Interior|Mineshaft]] interior.
+*[[Maneater]] added to indoor entity pool.
+
+=== [[Version 80]] ===
+
+* Artifice can now have foggy weather.
+* Maximum [[Landmine]] count increased from 35 to 60.
+* [[Cadaver|Cadaver Growth]] and [[Backwater Gunkfish]] added to indoor entity pool.
+
+==References==
+<references />
+
+==Navigation==
+{{moons}}
+
+[[ru:Artifice]]

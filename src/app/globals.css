@@ -1,0 +1,1988 @@
+@import "tailwindcss";
+
+/* next-themes sets `class="dark"` on <html>; make Tailwind's dark: variant follow it. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/* Design tokens — docs/engine/theme.md (Vercel design language).      */
+/* Light is the default; .dark overrides every pair.                   */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* canvas & surfaces */
+  --canvas: #ffffff;          /* page background */
+  --canvas-soft: #fafafa;     /* wells, alternate rows, code blocks */
+  --canvas-soft-2: #f2f2f2;   /* pressed/nested wells */
+  --surface: #ffffff;         /* cards, infobox, popovers */
+  --backdrop: rgba(0, 0, 0, 0.4);
+
+  /* text */
+  --ink: #171717;             /* headings, strong, primary buttons */
+  --body: #444444;            /* body text */
+  --mute: #666666;            /* secondary text, captions */
+  --faint: #999999;           /* placeholders, disabled */
+
+  /* lines */
+  --hairline: #eaeaea;
+  --hairline-strong: #cccccc;
+
+  /* primary action = ink (black buttons, Vercel style) */
+  --primary: #171717;
+  --on-primary: #ffffff;
+  --primary-hover: #383838;
+
+  /* links & states */
+  --link: #0070f3;
+  --link-hover: #0761d1;
+  --link-soft: rgba(0, 112, 243, 0.1);
+  --link-red: #ee0000;        /* red links (missing pages) */
+  --success: #0070f3;
+  --warning: #f5a623;
+  --warning-soft: #fff3d8;
+  --error: #ee0000;
+  --error-soft: #fbeaea;
+  --info: #0070f3;
+  --info-soft: #e8f1fd;
+
+  /* decorative gradients — hero/empty-state accents ONLY, never body text */
+  --grad-a-start: #007cf0; --grad-a-end: #00dfd8;   /* develop  */
+  --grad-b-start: #7928ca; --grad-b-end: #ff0080;   /* preview  */
+  --grad-c-start: #ff4d4d; --grad-c-end: #f9cb28;   /* ship     */
+
+  /* code */
+  --code-bg: #fafafa;
+  --code-ink: #171717;
+
+  /* wikitext source-editor syntax colors (theme.md "Source editor syntax") */
+  --syntax-comment: #8a8a8a;
+  --syntax-structure: #525252;
+  --syntax-heading: #0f766e;
+  --syntax-emphasis: #a16207;
+  --syntax-link: #0070f3;
+  --syntax-label: #047857;
+  --syntax-external: #1d4ed8;
+  --syntax-template: #be185d;
+  --syntax-param: #9333ea;
+  --syntax-tag: #c2410c;
+
+  /* account role badges (src/lib/roles.ts). The dark values are High Quota
+     HQ's own role colors; these light ones are darkened counterparts so the
+     badges stay legible on white. */
+  --role-manager: #cc0000;
+  --role-site-developer: #0f766e;
+  --role-moderator: #b45309;
+  --role-verifier: #2146bd;
+  --role-modded-verifier: #7f1d1d;
+
+  --selection-bg: #79ffe1;    /* cyan selection */
+  --selection-fg: #0a0a0a;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+.dark {
+  --canvas: #0a0a0a;
+  --canvas-soft: #111111;
+  --canvas-soft-2: #1a1a1a;
+  --surface: #0f0f0f;
+  --backdrop: rgba(0, 0, 0, 0.6);
+  --ink: #ededed;
+  --body: #a1a1a1;
+  --mute: #8f8f8f;
+  --faint: #5c5c5c;
+  --hairline: #2a2a2a;
+  --hairline-strong: #444444;
+  --primary: #ededed;
+  --on-primary: #0a0a0a;
+  --primary-hover: #cccccc;
+  --link: #3291ff;
+  --link-hover: #52a8ff;
+  --link-soft: rgba(50, 145, 255, 0.15);
+  --link-red: #ff6166;
+  --success: #3291ff;
+  --warning: #f7b955;
+  --warning-soft: #2a2013;
+  --error: #ff6166;
+  --error-soft: #2a1314;
+  --info: #3291ff;
+  --info-soft: #10233d;
+  --code-bg: #111111;
+  --code-ink: #ededed;
+  --syntax-comment: #6f6f6f;
+  --syntax-structure: #a3a3a3;
+  --syntax-heading: #5eead4;
+  --syntax-emphasis: #fbbf24;
+  --syntax-link: #3291ff;
+  --syntax-label: #4ade80;
+  --syntax-external: #93c5fd;
+  --syntax-template: #f472b6;
+  --syntax-param: #d8b4fe;
+  --syntax-tag: #fdba74;
+  /* High Quota HQ's role colors (js/profile.js roleColors), lightened where
+     the original failed WCAG AA on --surface: its #640000 and #2146bd are far
+     too dark on #0f0f0f, and #d64545 lands at 4.38:1. */
+  --role-manager: #ff0000;
+  --role-site-developer: #4bffc0;
+  --role-moderator: #f8c22c;
+  --role-verifier: #5b7fe8;
+  --role-modded-verifier: #e26060;
+  --selection-bg: #0761d1;
+  --selection-fg: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+/* ------------------------------------------------------------------ */
+/* Tailwind bridge — bg-canvas, text-ink, border-hairline, …          */
+/* ------------------------------------------------------------------ */
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-canvas-soft-2: var(--canvas-soft-2);
+  --color-surface: var(--surface);
+  --color-backdrop: var(--backdrop);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-mute: var(--mute);
+  --color-faint: var(--faint);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-link: var(--link);
+  --color-link-hover: var(--link-hover);
+  --color-link-soft: var(--link-soft);
+  --color-link-red: var(--link-red);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-code-bg: var(--code-bg);
+  --color-code-ink: var(--code-ink);
+  --color-syntax-comment: var(--syntax-comment);
+  --color-syntax-structure: var(--syntax-structure);
+  --color-syntax-heading: var(--syntax-heading);
+  --color-syntax-emphasis: var(--syntax-emphasis);
+  --color-syntax-link: var(--syntax-link);
+  --color-syntax-label: var(--syntax-label);
+  --color-syntax-external: var(--syntax-external);
+  --color-syntax-template: var(--syntax-template);
+  --color-syntax-param: var(--syntax-param);
+  --color-syntax-tag: var(--syntax-tag);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    Monaco, "Liberation Mono", "Courier New", monospace;
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                */
+/* ------------------------------------------------------------------ */
+
+@layer base {
+  html {
+    background: var(--canvas);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--canvas);
+    color: var(--body);
+    font-family: var(--font-sans);
+    font-size: 14px; /* chrome text; articles opt into 16px via .wiki-prose */
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--selection-bg);
+    color: var(--selection-fg);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  h1 { letter-spacing: -0.04em; }
+  h2, h3 { letter-spacing: -0.02em; }
+
+  strong, b { color: var(--ink); font-weight: 600; }
+
+  code, kbd, samp, pre {
+    font-family: var(--font-mono);
+  }
+
+  /* Focus states visible everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--hairline);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Utilities                                                           */
+/* ------------------------------------------------------------------ */
+
+@layer utilities {
+  .focus-ring {
+    outline: none;
+  }
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--link);
+    outline-offset: 2px;
+  }
+
+  .surface {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Decorative gradient text — hero / empty-state accents ONLY. */
+  .grad-text-a,
+  .grad-text-b,
+  .grad-text-c {
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .grad-text-a { background-image: linear-gradient(90deg, var(--grad-a-start), var(--grad-a-end)); }
+  .grad-text-b { background-image: linear-gradient(90deg, var(--grad-b-start), var(--grad-b-end)); }
+  .grad-text-c { background-image: linear-gradient(90deg, var(--grad-c-start), var(--grad-c-end)); }
+}
+
+/* ------------------------------------------------------------------ */
+/* Article surface — .wiki-prose styles every class the engine emits.  */
+/* (Class contract: src/lib/wikitext/render.ts header.)                */
+/* ------------------------------------------------------------------ */
+
+.wiki-prose {
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--body);
+  overflow-wrap: break-word;
+}
+
+/* -- flow ----------------------------------------------------------- */
+
+.wiki-prose p {
+  margin: 0 0 1em;
+}
+
+.wiki-prose ul,
+.wiki-prose ol {
+  margin: 0 0 1em;
+  padding-left: 1.6em;
+}
+
+.wiki-prose ul { list-style: disc; }
+.wiki-prose ol { list-style: decimal; }
+.wiki-prose li { margin: 0.25em 0; }
+.wiki-prose li > ul,
+.wiki-prose li > ol { margin-bottom: 0; }
+
+.wiki-prose dl {
+  margin: 0 0 1em;
+}
+.wiki-prose dt {
+  color: var(--ink);
+  font-weight: 600;
+  margin-top: 0.35em;
+}
+.wiki-prose dd {
+  margin: 0.15em 0 0.15em 1.6em;
+}
+
+.wiki-prose hr {
+  margin: 1.5em 0;
+  border: 0;
+  border-top: 1px solid var(--hairline);
+}
+
+.wiki-prose img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* -- headings (ids live on the h* element itself; no .mw-headline) -- */
+
+.wiki-prose h1,
+.wiki-prose h2,
+.wiki-prose h3,
+.wiki-prose h4,
+.wiki-prose h5,
+.wiki-prose h6 {
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 1.6em 0 0.6em;
+}
+
+.wiki-prose h1 {
+  font-size: 2em;
+  letter-spacing: -0.04em;
+}
+
+.wiki-prose h2 {
+  font-size: 1.5em;
+  letter-spacing: -0.02em;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 0.3em;
+}
+
+.wiki-prose h3 {
+  font-size: 1.25em;
+  letter-spacing: -0.02em;
+}
+
+.wiki-prose h4 { font-size: 1.1em; }
+.wiki-prose h5 { font-size: 1em; }
+.wiki-prose h6 {
+  font-size: 0.9em;
+  color: var(--mute);
+}
+
+/* -- links ---------------------------------------------------------- */
+
+.wiki-prose a {
+  color: var(--link);
+  text-decoration: none;
+}
+.wiki-prose a:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+
+/* missing pages: MW's `new` + our `red-link` */
+.wiki-prose a.new,
+.wiki-prose a.red-link {
+  color: var(--link-red);
+}
+.wiki-prose a.new:hover,
+.wiki-prose a.red-link:hover {
+  color: var(--link-red);
+}
+
+/* external links (.external.text / .autonumber / .free): small ↗ */
+.wiki-prose a.external::after {
+  content: "\2197"; /* ↗ */
+  display: inline-block;
+  margin-left: 0.15em;
+  font-size: 0.7em;
+  vertical-align: 0.25em;
+  text-decoration: none;
+}
+
+/* -- TOC (.toc.wiki-toc, .toctitle, .toclevel-N, .tocnumber, .toctext) */
+
+.wiki-prose .wiki-toc {
+  display: inline-block;
+  min-width: 220px;
+  max-width: 100%;
+  background: var(--canvas-soft);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin: 0 0 1.25em;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.wiki-prose .wiki-toc .toctitle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+}
+
+.wiki-prose .wiki-toc .toctitle h2 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* [hide]/[show] toggle injected by the TocToggle island */
+.wiki-prose .wiki-toc .toctoggle {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--link);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.wiki-prose .wiki-toc .toctoggle:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}
+.wiki-prose .wiki-toc.toc-hidden > ul {
+  display: none;
+}
+
+.wiki-prose .wiki-toc ul {
+  list-style: none;
+  margin: 0.5em 0 0;
+  padding: 0;
+}
+.wiki-prose .wiki-toc ul ul {
+  margin: 0;
+  padding-left: 1.25em;
+}
+.wiki-prose .wiki-toc li {
+  margin: 0.2em 0;
+}
+.wiki-prose .wiki-toc a {
+  color: var(--body);
+}
+.wiki-prose .wiki-toc a:hover {
+  color: var(--link);
+  text-decoration: none;
+}
+.wiki-prose .wiki-toc .tocnumber {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  color: var(--faint);
+  margin-right: 0.5em;
+}
+
+/* -- infobox -------------------------------------------------------- */
+/* Seed templates carry legacy inline styles (colored bars, greys);    */
+/* theme.md says restyle via tokens — hence the !important overrides.  */
+
+.wiki-prose .infobox {
+  float: right !important;
+  clear: right !important;
+  width: 300px !important;
+  max-width: 100%;
+  margin: 0 0 1em 1.5em !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--hairline) !important;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border-collapse: separate !important;
+  border-spacing: 0;
+  overflow: hidden;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+  color: var(--body);
+}
+
+.wiki-prose .infobox tr > th,
+.wiki-prose .infobox tr > td {
+  border: 0;
+}
+
+/* title row (first full-width header): semibold ink, bottom hairline, NO colored bar */
+.wiki-prose .infobox tr:first-child > th[colspan] {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  font-size: 14px !important;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  padding: 10px 12px !important;
+  border-bottom: 1px solid var(--hairline) !important;
+}
+
+/* section header rows (other full-width headers): 11px uppercase mute */
+.wiki-prose .infobox tr:not(:first-child) > th[colspan] {
+  background: var(--canvas-soft) !important;
+  color: var(--mute) !important;
+  font-size: 11px !important;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 6px 12px !important;
+  border-top: 1px solid var(--hairline) !important;
+  border-bottom: 1px solid var(--hairline) !important;
+}
+
+/* label cells: mono 12px mute */
+.wiki-prose .infobox th:not([colspan]) {
+  background: transparent !important;
+  color: var(--mute) !important;
+  font-family: var(--font-mono);
+  font-size: 12px !important;
+  font-weight: 500;
+  text-align: left !important;
+  vertical-align: top;
+  padding: 6px 12px !important;
+}
+
+/* value cells */
+.wiki-prose .infobox td {
+  background: transparent !important;
+  color: var(--body) !important;
+  padding: 6px 12px !important;
+  vertical-align: top;
+}
+
+.wiki-prose .infobox td[colspan] {
+  text-align: center;
+  padding: 10px 12px !important;
+}
+
+/* infobox image: hairline frame, radius-sm */
+.wiki-prose .infobox img {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--canvas);
+}
+
+@media (max-width: 719px) {
+  .wiki-prose .infobox {
+    float: none !important;
+    clear: both !important;
+    width: 100% !important;
+    margin: 0 0 1em !important;
+  }
+}
+
+/* -- tables (.wikitable) ------------------------------------------- */
+
+.wiki-prose .wikitable {
+  display: block;            /* the table is its own scroll wrapper */
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0 0 1.25em;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.wiki-prose .wikitable th,
+.wiki-prose .wikitable td {
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.wiki-prose .wikitable tr > th:last-child,
+.wiki-prose .wikitable tr > td:last-child {
+  border-right: 0;
+}
+
+.wiki-prose .wikitable tr:last-child > th,
+.wiki-prose .wikitable tr:last-child > td {
+  border-bottom: 0;
+}
+
+.wiki-prose .wikitable th {
+  background: var(--canvas-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.wiki-prose .wikitable caption {
+  caption-side: top;
+  text-align: left;
+  color: var(--mute);
+  font-size: 13px;
+  padding: 0 0 6px;
+}
+
+/* -- references ----------------------------------------------------- */
+
+.wiki-prose sup.reference {
+  line-height: 0;
+  font-size: 0.75em;
+}
+.wiki-prose sup.reference a {
+  color: var(--link);
+  font-family: var(--font-mono);
+  text-decoration: none;
+  padding: 0 1px;
+}
+
+.wiki-prose ol.references,
+.wiki-prose .references {
+  font-size: 13px;
+  color: var(--mute);
+  line-height: 1.6;
+  margin: 0 0 1em;
+  padding-left: 1.8em;
+}
+.wiki-prose .references li {
+  margin: 0.3em 0;
+}
+.wiki-prose .references li:target,
+.wiki-prose sup.reference:target {
+  background: var(--link-soft);
+  border-radius: var(--radius-sm);
+}
+
+/* legacy Reflist template wrapper (inline font-size is close enough) */
+.wiki-prose .reflist {
+  color: var(--mute);
+}
+
+.wiki-prose .mw-ref-warning {
+  display: block;
+  background: var(--warning-soft);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  margin: 0.75em 0;
+  font-size: 13px;
+}
+
+/* -- errors --------------------------------------------------------- */
+
+.wiki-prose .error,
+.wiki-prose .wiki-error {
+  background: var(--error-soft);
+  color: var(--error);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+  font-size: 0.85em;
+}
+
+/* -- blockquote / code ---------------------------------------------- */
+
+.wiki-prose blockquote {
+  border-left: 3px solid var(--hairline-strong);
+  color: var(--mute);
+  margin: 0 0 1em;
+  padding: 0.25em 0 0.25em 1em;
+}
+.wiki-prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.wiki-prose code {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  padding: 2px 5px;
+  font-size: 0.85em;
+}
+
+.wiki-prose pre {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin: 0 0 1.25em;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.wiki-prose pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* <syntaxhighlight> output */
+.wiki-prose .mw-highlight {
+  margin: 0 0 1.25em;
+}
+.wiki-prose .mw-highlight pre {
+  margin: 0;
+}
+
+/* -- images / thumbs / galleries ------------------------------------ */
+
+/* A picture opens the image viewer (wiki/image-zoom.tsx), so it says so.
+   `zoom-in` rather than `pointer`: the click no longer navigates, and the
+   cursor is the only thing that tells a reader that before they press. An
+   image the author aimed somewhere themselves with `link=` renders as
+   `a.external`, is not intercepted, and keeps the ordinary link cursor. */
+.wiki-prose a.mw-file {
+  text-decoration: none;
+  cursor: zoom-in;
+}
+
+.wiki-prose figure.mw-thumb {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 6px;
+  margin: 0 0 1em;
+  max-width: 100%;
+  font-size: 13px;
+}
+
+.wiki-prose figure.mw-thumb img {
+  border-radius: var(--radius-sm);
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.wiki-prose figure.mw-thumb figcaption {
+  color: var(--mute);
+  padding: 6px 4px 2px;
+  line-height: 1.5;
+}
+
+.wiki-prose .mw-halign-right {
+  float: right;
+  clear: right;
+  margin: 0 0 1em 1.5em;
+}
+.wiki-prose .mw-halign-left {
+  float: left;
+  clear: left;
+  margin: 0 1.5em 1em 0;
+}
+.wiki-prose .mw-halign-center {
+  display: table;
+  float: none;
+  margin: 0 auto 1em;
+}
+.wiki-prose .mw-halign-none {
+  float: none;
+  margin: 0 0 1em;
+}
+
+.wiki-prose .mw-image-border {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 719px) {
+  .wiki-prose .mw-halign-left,
+  .wiki-prose .mw-halign-right {
+    float: none;
+    margin: 0 0 1em;
+  }
+}
+
+/* galleries */
+.wiki-prose ul.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  list-style: none;
+  margin: 0 0 1.25em;
+  padding: 0;
+}
+
+.wiki-prose .gallerycaption {
+  flex-basis: 100%;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 14px;
+  margin: 0;
+}
+
+.wiki-prose li.gallerybox {
+  margin: 0;
+  max-width: 100%;
+}
+
+.wiki-prose .gallerybox .thumb {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wiki-prose .gallerybox .thumb img {
+  border-radius: var(--radius-sm);
+  max-width: 100%;
+  height: auto;
+}
+
+.wiki-prose .gallerytext {
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 4px 2px 0;
+}
+
+.wiki-prose .mw-gallery-packed .thumb {
+  padding: 0;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.wiki-prose .mw-gallery-packed .thumb img {
+  border: 1px solid var(--hairline);
+}
+
+/* -- redirect page box ---------------------------------------------- */
+
+.wiki-prose .redirectMsg {
+  background: var(--canvas-soft);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin: 0 0 1.25em;
+}
+.wiki-prose .redirectMsg p {
+  color: var(--mute);
+  font-size: 13px;
+  margin: 0 0 0.25em;
+}
+.wiki-prose ul.redirectText {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+}
+
+/* -- version-scoped passages ---------------------------------------- */
+/* Seed template sets a legacy orange inline style; theme wins.        */
+
+.wiki-prose .version-scoped {
+  border-left: 2px solid var(--link) !important;
+  background: var(--link-soft) !important;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 8px 12px !important;
+  margin: 0 0 1em !important;
+}
+
+/* -- seed-template .notice divs → tonal banners --------------------- */
+
+.wiki-prose div.notice {
+  background: var(--info-soft) !important;
+  color: var(--body) !important;
+  border: 1px solid var(--info) !important;
+  border-left-width: 3px !important;
+  border-radius: var(--radius-md);
+  padding: 8px 12px !important;
+  margin: 0 0 1em !important;
+  font-size: 13px !important;
+}
+
+.wiki-prose sup.notice {
+  color: var(--warning) !important;
+  font-family: var(--font-mono);
+  font-size: 0.7em;
+  font-weight: 600 !important;
+  white-space: nowrap;
+  cursor: help;
+}
+
+/* ------------------------------------------------------------------ */
+/* Source editor — the highlighted mirror behind the textarea.         */
+/* (src/components/wiki/editor-source.tsx; theme.md "Source editor")   */
+/*                                                                     */
+/* The <pre> mirror and the transparent <textarea> are stacked, so     */
+/* every metric that affects glyph position must be identical or the   */
+/* caret drifts away from the text. Keep them on ONE rule.             */
+/* ------------------------------------------------------------------ */
+
+.wiki-source-layer {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  border: 0;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  letter-spacing: 0;
+  tab-size: 4;
+  white-space: pre;      /* no soft wrap: 1 source line = 1 gutter row */
+  overflow-wrap: normal;
+  word-break: normal;
+  font-variant-ligatures: none;
+}
+
+/* The mirror is scrolled programmatically from the textarea's onScroll. */
+.wiki-source-mirror {
+  overflow: hidden;
+  color: var(--body);
+  pointer-events: none;
+  user-select: none;
+}
+
+.wiki-source-input {
+  overflow: auto;
+  resize: none;
+  background: transparent;
+  color: transparent;
+  caret-color: var(--ink);
+  outline: none;
+}
+
+.wiki-source-input:focus-visible {
+  outline: none;
+}
+
+.wiki-source-input::selection {
+  background: var(--selection-bg);
+  color: transparent;
+}
+
+/* Absolutely positioned inside its column (see editor-source.tsx), so the
+   numbers never stretch the editor's fixed-height row. Same 20px line box as
+   the source layers, or the numbers would drift out of step. */
+.wiki-source-gutter {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: right;
+  color: var(--faint);
+  user-select: none;
+}
+
+/* ================================================================== */
+/* Visual editor surface — the contenteditable that mirrors an article */
+/* (src/components/wiki/visual-editor.tsx; docs/engine/visual-editor.md)*/
+/*                                                                     */
+/* The surface carries .wiki-prose as well, so what the author edits   */
+/* is drawn by the very same typography as the published page. Nothing */
+/* here may restate that typography: this section adds only what the   */
+/* *editing* affordances need — block boundaries, atomic chips, the    */
+/* caret and the selection. Layout chrome copies Fandom; every colour  */
+/* is a token, so dark mode follows for free.                          */
+/* ================================================================== */
+
+.ve-surface {
+  display: block;
+  /* Left is wider than right on purpose: that is the gutter the move handle
+     stands in (§3.1), outside the text so it can never reflow a line. */
+  padding: 20px 24px 96px 44px;
+  min-height: 320px;         /* an empty page must still be a click target */
+  caret-color: var(--ink);
+  outline: none;             /* the wrapper draws focus, not the text box */
+}
+
+/* Every mapped node is a positioning context: the hover rule and the
+   atomic chrome are pseudo-elements/absolutes hung off it (§3). */
+.ve-surface [data-ve] {
+  position: relative;
+}
+
+/* Block boundaries are otherwise invisible in prose. A left rule on
+   hover shows the author what Enter would split — direct children only,
+   or every inline link would grow a rule of its own. It is drawn as a
+   pseudo-element in the padding so it can never reflow the text. */
+.ve-surface > [data-ve]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -12px;
+  width: 2px;
+  border-radius: var(--radius-sm);
+  background: var(--hairline);
+  opacity: 0;
+  transition: opacity 120ms ease;
+  pointer-events: none;
+}
+
+.ve-surface > [data-ve]:hover::before {
+  opacity: 1;
+}
+
+/* The placeholder text arrives as an inline custom property from the
+   component, because no user-visible English may live in a stylesheet. */
+.ve-surface[data-ve-empty="true"]::before {
+  content: var(--ve-placeholder, "");
+  color: var(--faint);
+  pointer-events: none;
+}
+
+/* The empty paragraph the caret is standing in says what "/" does. It is a
+   pseudo-element hung off an attribute the component sets (§1), so nothing a
+   reader could publish is ever written into the document; `position: absolute`
+   keeps it out of the line box, so the caret sits at the line's start rather
+   than after the hint. */
+.ve-surface p[data-ve-hint]::after {
+  content: var(--ve-hint, "");
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: var(--faint);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.ve-surface ::selection {
+  background: var(--selection-bg);
+  color: var(--selection-fg);
+}
+
+/* -- moving a block -------------------------------------------------- */
+/* Two real buttons in the gutter, one per direction (§3.1). They are    */
+/* React's markup and sit OUTSIDE the contenteditable — drawn inside it  */
+/* they would be content the reader publishes — so they are positioned   */
+/* against `.ve-shell`, the bordered box around the surface.             */
+/*                                                                      */
+/* Deliberately not a drag handle: dragging cannot be reached from a     */
+/* keyboard, and inside a contenteditable the browser's own drag of the  */
+/* selection fights it. Two buttons and Alt+Arrow can be reached by      */
+/* everyone.                                                            */
+
+.ve-move {
+  position: absolute;
+  left: 8px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  /* Aligns the pair with the block's first line rather than with its box. */
+  margin-top: 2px;
+  opacity: 0;
+  pointer-events: none;   /* an invisible button must not be clickable */
+  transition: opacity 120ms ease;
+}
+
+/* "On hover or focus": the pointer being anywhere in the editor, or the
+   caret being in it — which is the keyboard user's whole affordance. */
+.ve-shell:hover .ve-move,
+.ve-shell:focus-within .ve-move {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ve-move-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--faint);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.ve-move-button:hover:not(:disabled) {
+  border-color: var(--hairline);
+  background: var(--canvas-soft-2);
+  color: var(--ink);
+}
+
+/* At the top or the bottom of the document the move lands nowhere, and the
+   button says so rather than clicking and doing nothing. */
+.ve-move-button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.ve-move-button:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 1px;
+}
+
+/* -- dragging something into a new place (visual-editor.md §3.4) ---- */
+/* The whole animation, and it is three rules. The surface writes only a    */
+/* `transform` and a marker attribute onto the elements it is moving — a    */
+/* style attribute and a `data-ve-*` marker are read by nothing and         */
+/* published by nothing (§3), which is what lets the author's OWN element   */
+/* follow the pointer rather than a copy of it standing in for it.          */
+/*                                                                         */
+/* Only the elements making ROOM get the transition. The one under the      */
+/* pointer must not: it is being placed by hand, sixty times a second, and  */
+/* an eased transform would have it trailing the hand that is holding it.   */
+
+.ve-surface [data-ve-shift],
+.ve-surface [data-ve-settling] {
+  transition: transform 160ms cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform;
+}
+
+/* Lifted off the page while it is being carried. `position: relative` is
+   what gives a block somewhere to lift TO; a `<tr>` and a `<td>` are given a
+   stacking context by the transform itself. */
+.ve-surface [data-ve-dragging] {
+  position: relative;
+  z-index: 3;
+  opacity: 0.9;
+  cursor: grabbing;
+}
+
+/* While a drag is on, the pointer is doing one thing and one thing only: no
+   text selection under it, and the cursor says so everywhere it goes. */
+.ve-shell[data-ve-sorting="true"] {
+  cursor: grabbing;
+}
+
+.ve-shell[data-ve-sorting="true"] .ve-surface {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* A reader who has asked for less motion gets the move without the travel:
+   the arrangement still changes, it simply arrives. */
+@media (prefers-reduced-motion: reduce) {
+  .ve-surface [data-ve-shift],
+  .ve-surface [data-ve-settling] {
+    transition: none;
+  }
+}
+
+/* -- the editable table (visual-editor.md §3) ---------------------- */
+/* A `VeTable` is drawn as a REAL `<table>` whose cells are ordinary      */
+/* editable regions, so it carries none of the article's classes: the     */
+/* `class="wikitable"` the author wrote rides in `data-ve-attrs` and is   */
+/* published from there, never applied here (dom.ts). Without these rules */
+/* the grid falls back to the browser's default table — no rules, no      */
+/* padding, no header shading — and an author cannot see where one cell   */
+/* ends and the next begins.                                             */
+/*                                                                       */
+/* So the frame below RESTATES `.wikitable`'s, deliberately: the editor   */
+/* has to look like the article it publishes. What it does not restate is */
+/* `display: block` — that turns the table into its own scroll container, */
+/* and a scroller under `.ve-table-controls` (positioned from the         */
+/* wrapper) would slide the controls off the table they act on. A wide    */
+/* table wraps its cells here instead of scrolling.                      */
+
+.ve-surface table[data-ve="table"] {
+  width: auto;
+  max-width: 100%;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 0 0 1.25em;
+  font-size: 14px;
+  line-height: 1.5;
+  table-layout: auto;
+}
+
+.ve-surface table[data-ve="table"] th,
+.ve-surface table[data-ve="table"] td {
+  border-right: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+  /* An empty cell is still a click target: without a floor it collapses to
+     the width of its filler `<br>` and cannot be aimed at. */
+  min-width: 3rem;
+  word-break: break-word;
+}
+
+.ve-surface table[data-ve="table"] tr > th:last-child,
+.ve-surface table[data-ve="table"] tr > td:last-child {
+  border-right: 0;
+}
+
+.ve-surface table[data-ve="table"] tr:last-child > th,
+.ve-surface table[data-ve="table"] tr:last-child > td {
+  border-bottom: 0;
+}
+
+.ve-surface table[data-ve="table"] th {
+  background: var(--canvas-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* The cell the caret is in. `:focus-within` alone would not fire — the
+   editing host is the surface, not the cell — so the surface sets the
+   attribute where it already tracks the caret's cell. */
+.ve-surface table[data-ve="table"] [data-ve="cell"][data-ve-here="true"] {
+  box-shadow: inset 0 0 0 2px var(--link);
+}
+
+.ve-surface table[data-ve="table"] > caption,
+.ve-surface table[data-ve="table"] caption[data-ve="caption"] {
+  caption-side: top;
+  text-align: left;
+  color: var(--mute);
+  font-size: 13px;
+  padding: 0 0 6px;
+}
+
+/* A block inside a cell is a table the model has to refuse (spec §7.3), so
+   nothing in one may carry a paragraph's margins. */
+.ve-surface table[data-ve="table"] [data-ve="cell"] > :first-child {
+  margin-top: 0;
+}
+.ve-surface table[data-ve="table"] [data-ve="cell"] > :last-child {
+  margin-bottom: 0;
+}
+
+/* -- the table controls (visual-editor.md §3.2) --------------------- */
+/* A strip of real buttons over the table the caret is in, drawn from   */
+/* React and OUTSIDE the contenteditable: a button written inside a     */
+/* cell would be markup `domToDocument` reads as that cell's content.   */
+/* It follows the CARET, not the pointer — a strip that appeared on     */
+/* hover would vanish on the way to being clicked, because the pointer  */
+/* has to cross the surface to reach it.                               */
+
+.ve-table-controls {
+  position: absolute;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  padding: 2px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  /* A narrow surface scrolls the strip rather than pushing it out of the
+     box: twelve buttons is wider than a phone. */
+  max-width: calc(100% - 16px);
+  overflow-x: auto;
+}
+
+.ve-table-divider {
+  flex: none;
+  width: 1px;
+  height: 16px;
+  margin: 0 2px;
+  background: var(--hairline);
+}
+
+.ve-table-button {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--mute);
+  cursor: pointer;
+  transition:
+    color 120ms ease,
+    background 120ms ease,
+    border-color 120ms ease;
+}
+
+.ve-table-button:hover:not(:disabled) {
+  border-color: var(--hairline);
+  background: var(--canvas-soft-2);
+  color: var(--ink);
+}
+
+/* At the first row there is nowhere up, and the button says so rather
+   than clicking and doing nothing (§3.1's rule, one control along). */
+.ve-table-button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.ve-table-button:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 1px;
+}
+
+/* -- atomic nodes --------------------------------------------------- */
+/* A chip standing in for wikitext the surface refuses to edit inline   */
+/* (§5). It is contenteditable="false", so the cursor treats it as one  */
+/* character and the dialog is the only way in.                        */
+
+.ve-atomic {
+  display: block;
+  margin: 0 0 1em;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  background: var(--canvas-soft);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ve-atomic:hover {
+  border-color: var(--hairline-strong);
+}
+
+/* Fandom outlines a selected template rather than filling it, so the
+   preview underneath stays readable. */
+.ve-atomic[data-ve-selected="true"] {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+.ve-atomic-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--hairline);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.ve-atomic-head-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--faint);
+}
+
+.ve-atomic-head-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Edit/remove sit right-aligned and stay out of the way until the node
+   is hovered or selected — but they are real buttons, so focus-within
+   must reveal them or keyboard users would tab into nothing. */
+.ve-atomic-head-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.ve-atomic:hover .ve-atomic-head-actions,
+.ve-atomic[data-ve-selected="true"] .ve-atomic-head-actions,
+.ve-atomic-head-actions:focus-within {
+  opacity: 1;
+}
+
+/* Why one table is a chip and the next is an editable grid (§2). It is
+   drawn under the head row and is always visible: an author who is not
+   told reads the difference as arbitrary. */
+.ve-atomic-why {
+  margin: 0;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--canvas-soft-2);
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--mute);
+}
+
+.ve-atomic-body {
+  padding: 10px 12px;
+  max-height: 320px;   /* a long table must not own the whole surface */
+  overflow: auto;
+}
+
+/* Previews arrive from POST /api/preview/fragments after the document is
+   already on screen. A static bar holds the space; no animation, so a
+   page of templates does not shimmer while it settles. */
+.ve-atomic-body[data-ve-loading="true"]::before {
+  content: "";
+  display: block;
+  height: 12px;
+  width: 40%;
+  border-radius: var(--radius-sm);
+  background: var(--hairline);
+}
+
+/* The engine rendered this fragment to NOTHING, and meant to: a version tag
+   outside the version being previewed says nothing at it (versioning.md
+   §2.1), and so does a false `{{#if:}}`. Distinct from a failure, which shows
+   the wikitext above — conflating the two put raw `<v69>…</v69>` in a table
+   cell at every version but v69.
+
+   The mark exists because an empty chip is not nothing on screen, it is a
+   node with no size: `contenteditable="false"`, so it cannot be typed into,
+   invisible, and impossible to aim at, delete or re-scope — while still being
+   published. The placeholder is punctuation, never words: the sentence
+   explaining it is a `title` the component sets from the dictionary. */
+.ve-atomic-body[data-ve-blank="true"]::after {
+  content: "—";
+  color: var(--faint);
+  font-family: var(--font-mono);
+}
+
+/* Fallback when a fragment failed to render: show the wikitext itself,
+   which is what the edit dialog will open anyway. */
+.ve-atomic-source {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--mute);
+  max-height: 160px;
+  overflow: auto;
+}
+
+/* Inline variant: sits in the run of text, so it carries no head row —
+   its label is its body — and shrinks to match the surrounding type. */
+.ve-atomic--inline {
+  display: inline-block;
+  vertical-align: baseline;
+  margin: 0;
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+
+.ve-atomic--inline .ve-atomic-body {
+  padding: 0;
+  max-height: none;
+  overflow: visible;
+}
+
+/* -- the in-place branch field (versioning.md §6) -------------------- */
+/* A versions block stays atomic — its wikitext is the truth — but it   */
+/* is no longer read-only: under the preview stands the branch this     */
+/* surface is previewing, in a real form control, because "pick a       */
+/* version and change it" has to mean typing. Everything the chip does  */
+/* to keep a caret out (no selection, pointer cursor) is undone inside  */
+/* here, or the author cannot select a word of their own sentence.      */
+
+.ve-atomic-branch {
+  border-top: 1px solid var(--hairline);
+  padding: 8px 12px 10px;
+  background: var(--canvas);
+  cursor: auto;
+  user-select: text;
+}
+
+.ve-atomic-branch-label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* The head row of the field, drawn in the same key as the chip's own:
+   it names the BRANCH, which is not always the version the strip has
+   selected — [v56, v73] previewed at v70 edits the v56 branch. */
+.ve-atomic-branch-head {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--mute);
+}
+
+.ve-atomic-branch-input {
+  display: block;
+  width: 100%;
+  min-height: 4.5em;
+  padding: 8px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  /* Wikitext, so the same face the source editor sets it in. */
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  resize: vertical;
+  cursor: text;
+  user-select: text;
+}
+
+.ve-atomic-branch-input:focus {
+  outline: none;
+  border-color: var(--link);
+  box-shadow: 0 0 0 2px var(--link-soft);
+}
+
+.ve-atomic-branch-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--mute);
+}
+
+/* -- load failure --------------------------------------------------- */
+/* The buffer could not be parsed, so the surface stands for nothing    */
+/* and takes no edits (§4): it says so, and shows the wikitext under    */
+/* that so the author can see their page is still there, untouched.     */
+
+.ve-load-error {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius-md);
+  background: var(--canvas-soft);
+  color: var(--ink);
+  font-size: 14px;
+}
+
+.ve-load-source {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--mute);
+}
+
+/* -- links ---------------------------------------------------------- */
+/* Article colour, but a text caret: in the editor a link is text you   */
+/* type into, not something you follow. The dotted underline is the     */
+/* only cue left that distinguishes a link from merely coloured text.   */
+
+.ve-surface a[data-ve="link"],
+.ve-surface a[data-ve="extlink"] {
+  color: var(--link);
+  cursor: text;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 2px;
+}
+
+/* -- print ---------------------------------------------------------- */
+/* Editing affordances are chrome; a printed surface is just the page. */
+
+@media print {
+  .ve-surface > [data-ve]::before,
+  .ve-surface[data-ve-empty="true"]::before,
+  .ve-atomic-head-actions,
+  .ve-move,
+  .ve-table-controls,
+  /* The branch field is a way IN to the wikitext; a printed page has none. */
+  .ve-atomic-branch {
+    display: none;
+  }
+
+  .ve-atomic {
+    border-color: var(--hairline);
+    background: transparent;
+  }
+
+  .ve-atomic[data-ve-selected="true"] {
+    outline: none;
+  }
+
+  .ve-atomic-body {
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+/* ================================================================== */
+/* Fandom features — theme.md "Fandom class inventory".               */
+/* TOKENS ONLY. Every class below is emitted by the engine's Fandom    */
+/* extensions (wikitext-spec.md "Fandom extensions" §F.1–§F.2) or is   */
+/* authored directly in Fandom wikitext (.fandom-table, .terminal-text)*/
+/* ================================================================== */
+
+/* -- portable infobox (<infobox> markup, §F.1) ---------------------- */
+/* Mirrors theme.md's ".infobox" directives: float right ~300px,       */
+/* hairline card, radius-lg, title row, small-caps header rows,        */
+/* label/value grid, framed image, full width on mobile.               */
+
+.wiki-prose .portable-infobox {
+  float: right;
+  clear: right;
+  width: 300px;
+  max-width: 100%;
+  margin: 0 0 1em 1.5em;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+/* Fandom's themable hooks. There is no per-wiki color scheme here, so
+   they resolve to the theme's own surface/hairline/mono tokens. */
+.wiki-prose .portable-infobox .pi-background { background: var(--surface); }
+.wiki-prose .portable-infobox .pi-border-color { border-color: var(--hairline); }
+.wiki-prose .portable-infobox .pi-secondary-background { background: var(--canvas-soft); }
+.wiki-prose .portable-infobox .pi-secondary-font { font-family: var(--font-mono); }
+.wiki-prose .portable-infobox .pi-font { font-family: inherit; }
+
+/* The shared padding class Fandom puts on every top-level row. */
+.wiki-prose .portable-infobox .pi-item-spacing {
+  padding: 8px 12px;
+}
+
+/* Title and header rows are <h2>, data labels are <h3>: the article
+   heading rules must be neutralized or they bring 1.5em type, a bottom
+   hairline and 1.6em top margins into the card. */
+.wiki-prose .portable-infobox .pi-title,
+.wiki-prose .portable-infobox .pi-header,
+.wiki-prose .portable-infobox .pi-data-label {
+  margin: 0;
+  border-bottom: 0;
+  padding-bottom: 0;
+  letter-spacing: normal;
+  line-height: 1.4;
+}
+
+.wiki-prose .portable-infobox .pi-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: center;
+  border-bottom: 1px solid var(--hairline);
+  padding: 10px 12px;
+}
+
+.wiki-prose .portable-infobox .pi-header {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* Two-column label/value grid — the shape that makes an infobox scannable. */
+.wiki-prose .portable-infobox .pi-data {
+  display: grid;
+  grid-template-columns: 38% 1fr;
+  gap: 0 10px;
+  align-items: baseline;
+  border-top: 1px solid var(--hairline);
+}
+.wiki-prose .portable-infobox .pi-data:first-child {
+  border-top: 0;
+}
+
+.wiki-prose .portable-infobox .pi-data-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--mute);
+}
+
+.wiki-prose .portable-infobox .pi-data-value {
+  color: var(--body);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.wiki-prose .portable-infobox .pi-data-value > :last-child {
+  margin-bottom: 0;
+}
+
+/* A data row with no label spans the full width instead of leaving a gap. */
+.wiki-prose .portable-infobox .pi-data > .pi-data-value:first-child {
+  grid-column: 1 / -1;
+}
+
+/* `layout="stacked"` puts the label above its value. */
+.wiki-prose .portable-infobox .pi-layout-stacked .pi-data,
+.wiki-prose .portable-infobox.pi-layout-stacked .pi-data {
+  grid-template-columns: 1fr;
+  gap: 2px;
+}
+
+.wiki-prose .portable-infobox .pi-image {
+  margin: 0;
+  padding: 10px 12px 0;
+  text-align: center;
+}
+.wiki-prose .portable-infobox .pi-image-thumbnail {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+}
+.wiki-prose .portable-infobox .pi-caption {
+  color: var(--mute);
+  font-size: 12px;
+  text-align: center;
+  padding-top: 6px;
+}
+
+.wiki-prose .portable-infobox .pi-navigation {
+  border-top: 1px solid var(--hairline);
+  color: var(--mute);
+  font-size: 12px;
+  text-align: center;
+}
+
+.wiki-prose .portable-infobox .pi-group {
+  border-top: 1px solid var(--hairline);
+}
+.wiki-prose .portable-infobox .pi-group > .pi-data:first-child {
+  border-top: 0;
+}
+
+/* `layout="horizontal"` group: labels become column heads above values. */
+.wiki-prose .portable-infobox .pi-horizontal-group {
+  display: flex;
+  flex-wrap: wrap;
+}
+.wiki-prose .portable-infobox .pi-horizontal-group > .pi-data {
+  display: block;
+  flex: 1 1 0;
+  border-top: 0;
+  text-align: center;
+}
+
+/* `collapse="open|closed"` is a JavaScript affordance on Fandom. Nothing
+   here hides content: a reader must never lose a value to a control that
+   does not exist. The group is simply marked with a heavier rule. */
+.wiki-prose .portable-infobox .pi-collapse {
+  border-top-width: 1px;
+}
+
+.wiki-prose .portable-infobox a.new,
+.wiki-prose .portable-infobox a.red-link {
+  color: var(--link-red);
+}
+
+@media (max-width: 719px) {
+  .wiki-prose .portable-infobox {
+    float: none;
+    width: 100%;
+    margin: 0 0 1.25em;
+  }
+}
+
+/* -- tabber (§F.2.1) ------------------------------------------------ */
+/* CSS-only: `input:checked + label + section` drives the panels, so the */
+/* widget is fully usable with JavaScript disabled.                     */
+
+.wiki-prose .tabber {
+  display: flex;
+  flex-wrap: wrap;
+  position: relative;
+  margin: 0 0 1.25em;
+}
+
+/* Visually hidden but STILL FOCUSABLE (never `display: none`), so the tab
+   row keeps native radio-group keyboard behavior: Tab to enter, arrows to
+   move between tabs. Absolute positioning also keeps it out of the flex
+   flow, so only labels and panels take part in the layout. */
+.wiki-prose .tabber-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.wiki-prose .tabber-tab {
+  order: 1;
+  cursor: pointer;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mute);
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  /* Overlaps the panel's top hairline so the active underline meets it. */
+  margin-bottom: -1px;
+  white-space: nowrap;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.wiki-prose .tabber-tab:hover {
+  color: var(--ink);
+}
+
+.wiki-prose .tabber-input:checked + .tabber-tab {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.wiki-prose .tabber-input:focus-visible + .tabber-tab {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.wiki-prose .tabber-panel {
+  order: 2;
+  display: none;
+  width: 100%;
+  border-top: 1px solid var(--hairline);
+  padding-top: 1em;
+}
+.wiki-prose .tabber-input:checked + .tabber-tab + .tabber-panel {
+  display: block;
+}
+.wiki-prose .tabber-panel > :last-child {
+  margin-bottom: 0;
+}
+
+/* -- poem (§F.2.2) -------------------------------------------------- */
+
+.wiki-prose .poem {
+  margin: 0 0 1.25em;
+  padding-left: 1em;
+  border-left: 2px solid var(--hairline);
+  color: var(--body);
+  line-height: 1.7;
+}
+
+/* -- gallery options (§F.2.3) --------------------------------------- */
+/* The base `.gallery` grid lives with the image styles above; these are  */
+/* only the attribute-driven variants.                                   */
+
+.wiki-prose .mw-gallery-nolines .thumb {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.wiki-prose .mw-gallery-nolines .gallerytext {
+  padding-left: 0;
+}
+
+.wiki-prose ul.gallery.mw-gallery-spacing-small { gap: 6px; }
+.wiki-prose ul.gallery.mw-gallery-spacing-medium { gap: 12px; }
+.wiki-prose ul.gallery.mw-gallery-spacing-large { gap: 22px; }
+
+.wiki-prose .mw-gallery-captionalign-left .gallerytext { text-align: left; }
+.wiki-prose .mw-gallery-captionalign-center .gallerytext { text-align: center; }
+.wiki-prose .mw-gallery-captionalign-right .gallerytext { text-align: right; }
+
+.wiki-prose ul.gallery.mw-gallery-position-left { justify-content: flex-start; }
+.wiki-prose ul.gallery.mw-gallery-position-center { justify-content: center; }
+.wiki-prose ul.gallery.mw-gallery-position-right { justify-content: flex-end; }
+
+/* -- sortable tables (§F.2.4) --------------------------------------- */
+/* Affordances hang off `.sortable-ready`, which the client island adds   */
+/* only once it has hydrated — no dead controls without JavaScript.       */
+
+.wiki-prose table.sortable.sortable-ready th[role~="button"] {
+  cursor: pointer;
+  position: relative;
+  padding-right: 24px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.wiki-prose table.sortable.sortable-ready th[role~="button"]:hover {
+  background: var(--canvas-soft-2);
+}
+
+.wiki-prose table.sortable.sortable-ready th[role~="button"]:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: -2px;
+}
+
+/* The indicator: a dim double arrow at rest, a solid single arrow when the
+   column is the active sort. `aria-sort` is both the a11y state and the
+   style hook, so the two can never disagree. */
+.wiki-prose table.sortable.sortable-ready th[role~="button"]::after {
+  position: absolute;
+  right: 7px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1;
+  color: var(--faint);
+  content: "↕";
+}
+.wiki-prose table.sortable.sortable-ready th[aria-sort="ascending"]::after {
+  content: "↑";
+  color: var(--ink);
+}
+.wiki-prose table.sortable.sortable-ready th[aria-sort="descending"]::after {
+  content: "↓";
+  color: var(--ink);
+}
+
+/* Columns and tables that opted out keep a plain header. */
+.wiki-prose table.sortable th.unsortable,
+.wiki-prose table.sortable.unsortable th {
+  cursor: auto;
+  padding-right: inherit;
+}
+.wiki-prose table.sortable th.unsortable::after,
+.wiki-prose table.sortable.unsortable th::after {
+  content: none;
+}
+
+/* -- .fandom-table -------------------------------------------------- */
+/* Fandom's own table class. Articles imported from Fandom use it INSTEAD */
+/* of .wikitable, so it needs the full grid treatment, not a tweak.       */
+
+.wiki-prose table.fandom-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin: 0 0 1.25em;
+  width: 100%;
+  font-size: 14px;
+  color: var(--body);
+}
+
+.wiki-prose table.fandom-table th,
+.wiki-prose table.fandom-table td {
+  border-top: 1px solid var(--hairline);
+  border-left: 1px solid var(--hairline);
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: top;
+}
+.wiki-prose table.fandom-table tr > th:first-child,
+.wiki-prose table.fandom-table tr > td:first-child {
+  border-left: 0;
+}
+.wiki-prose table.fandom-table tr:first-child > th,
+.wiki-prose table.fandom-table tr:first-child > td {
+  border-top: 0;
+}
+
+.wiki-prose table.fandom-table th {
+  background: var(--canvas-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.wiki-prose table.fandom-table caption {
+  color: var(--mute);
+  font-size: 13px;
+  padding-bottom: 6px;
+  text-align: left;
+}
+
+/* -- .terminal-text ------------------------------------------------- */
+/* The in-game terminal readout Fandom moon pages quote verbatim: a       */
+/* monospace well. Tokened, not green-on-black — theme.md reserves color  */
+/* for meaning.                                                          */
+
+.wiki-prose .terminal-text {
+  background: var(--code-bg);
+  color: var(--code-ink);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--hairline-strong);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  margin: 0 0 1.25em;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.wiki-prose .terminal-text p {
+  margin: 0 0 0.75em;
+}
+.wiki-prose .terminal-text > :last-child {
+  margin-bottom: 0;
+}
